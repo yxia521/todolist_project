@@ -18,8 +18,12 @@ describe('TodoList', () => {
     list.add(todo3);
   });
 
-  test('calling size returns the size of the todolist', () => {
+  test('todolist has a size of 3', () => {
     expect(list.size()).toBe(3);
+  });
+
+  test('calling toArray returns the list in array form', () => {
+    expect(list.toArray()).toEqual([todo1, todo2, todo3]);
   });
 
   test('calling first returns the first todo item', () => {
@@ -30,14 +34,10 @@ describe('TodoList', () => {
     expect(list.last()).toEqual(todo3);
   });
 
-  test('calling toArray returns the list in array form', () => {
-    expect(list.toArray()).toEqual([todo1, todo2, todo3]);
-  });
-
   test('shift() removes first item in list and returns it', () => {
     let todo = list.shift();
     expect(todo).toEqual(todo1);
-    expect(list.toArray()).toEqual([todo2, todo3]);
+    expect(list.toArray()).toEqual([todo2, todo3]); // compare the lists
   });
 
   test('pop() removes last item in list and returns it', () => {
@@ -53,11 +53,15 @@ describe('TodoList', () => {
   test('add throws error when non todo item is added', () => {
     expect(() => list.add(1)).toThrow(TypeError);
     expect(() => list.add('hi')).toThrow(TypeError);
+
+    let list2 = new TodoList("Tomorrow's Todos");
+    expect(() => list.add(list2)).toThrow(TypeError);
   });
 
   test('itemAt returns the item at given index', () => {
     expect(list.itemAt(0)).toEqual(todo1);
     expect(list.itemAt(1)).toEqual(todo2);
+    expect(list.itemAt(2)).toEqual(todo3);
     expect(() => list.itemAt(5)).toThrow(ReferenceError);
   });
 
@@ -71,7 +75,7 @@ describe('TodoList', () => {
   });
 
   test('markUndoneAt marks todo at given index undone', () => {
-    expect(() => list.markDoneAt(6)).toThrow(ReferenceError);
+    expect(() => list.markUndoneAt(6)).toThrow(ReferenceError);
     todo1.markDone();
     todo2.markDone();
     todo3.markDone();
@@ -85,9 +89,6 @@ describe('TodoList', () => {
 
   test('markAllDone marks all todos in list done', () => {
     list.markAllDone();
-    expect(todo1.isDone()).toBe(true);
-    expect(todo2.isDone()).toBe(true);
-    expect(todo3.isDone()).toBe(true);
     expect(list.isDone()).toBe(true);
   });
 
@@ -123,16 +124,16 @@ describe('TodoList', () => {
 [X] Clean room
 [X] Go to the gym`;
 
-    list.markAllDone();
+  list.markAllDone();
 
-    expect(list.toString()).toBe(string);
-  });
+  expect(list.toString()).toBe(string);
+});
 
   test('forEach iterates over all todos', () => {
     let result = [];
     list.forEach(todo => result.push(todo));
 
-    expect(list.toArray()).toEqual([todo1, todo2, todo3]);
+    expect(result).toEqual([todo1, todo2, todo3]);
   });
 
   test('filter returns new TodoList object with filtered todos', () => {
